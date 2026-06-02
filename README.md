@@ -101,9 +101,6 @@ docker run --rm \
 | `VPS-1` | `vps-2025-model1` |
 | `VPS-2` | `vps-2025-model2` |
 | `VPS-3` | `vps-2025-model3` |
-| `VPS-4` | `vps-2025-model4` |
-| `VPS-5` | `vps-2025-model5` |
-| `VPS-6` | `vps-2025-model6` |
 
 ## How It Works
 
