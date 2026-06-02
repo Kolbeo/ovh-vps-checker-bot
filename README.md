@@ -1,14 +1,15 @@
-# OVHcloud VPS-1 Telegram Checker
+# OVHcloud VPS Telegram Checker
 
-A lightweight Python Telegram bot that monitors OVHcloud VPS-1 Linux availability across European datacenters.
+A lightweight Python Telegram bot that monitors OVHcloud VPS availability across European datacenters.
 
-The bot uses OVHcloud's public VPS order availability endpoint, filters datacenters whose region code starts with `eu-`, and checks `linuxStatus`. No OVHcloud API credentials are required.
+The bot uses OVHcloud's public VPS order availability endpoint, filters datacenters whose region code starts with `eu-`, and checks the selected OS availability. No OVHcloud API credentials are required.
 
 ## Features
 
-- Check VPS-1 Linux availability on demand with `/check`
+- Choose the OS and VPS type from Telegram inline buttons
+- Check availability on demand with `/check`
 - Monitor continuously with `/watch`
-- Notify only when Linux stock appears
+- Notify only when stock appears
 - Optional automatic monitoring on startup with `TELEGRAM_CHAT_ID`
 - Docker-ready and configurable through environment variables
 
@@ -38,7 +39,8 @@ Available settings:
 | --- | --- | --- |
 | `TELEGRAM_BOT_TOKEN` | required | Telegram bot token from `@BotFather`. |
 | `TELEGRAM_CHAT_ID` | empty | Optional chat ID to start monitoring automatically when the bot starts. Use `/id` to retrieve it. |
-| `OVH_PLAN_CODE` | `vps-2025-model1` | OVHcloud plan code. `vps-2025-model1` is VPS-1. |
+| `OVH_PLAN_CODE` | `vps-2025-model1` | Default OVHcloud plan code. Supported values are `vps-2025-model1` through `vps-2025-model6`. |
+| `OVH_OS` | `linux` | Default OS to monitor. Supported values are `linux` and `windows`. |
 | `OVH_SUBSIDIARY` | `FR` | OVHcloud subsidiary used by the public availability endpoint. |
 | `CHECK_INTERVAL_SECONDS` | `60` | Monitoring interval in seconds. |
 
@@ -85,11 +87,23 @@ docker run --rm \
 
 | Command | Description |
 | --- | --- |
-| `/start` | Show available commands. |
-| `/check` | Check VPS-1 Linux availability now. |
+| `/start` | Show the OS and VPS type selector. |
+| `/settings` | Show the OS and VPS type selector again. |
+| `/check` | Check availability now using the current chat settings. |
 | `/watch` | Start monitoring the current chat. |
 | `/stop` | Stop monitoring the current chat. |
 | `/id` | Print the current Telegram chat ID. |
+
+## Selectable VPS Types
+
+| Telegram label | OVHcloud plan code |
+| --- | --- |
+| `VPS-1` | `vps-2025-model1` |
+| `VPS-2` | `vps-2025-model2` |
+| `VPS-3` | `vps-2025-model3` |
+| `VPS-4` | `vps-2025-model4` |
+| `VPS-5` | `vps-2025-model5` |
+| `VPS-6` | `vps-2025-model6` |
 
 ## How It Works
 
@@ -106,10 +120,10 @@ ovhSubsidiary=FR
 planCode=vps-2025-model1
 ```
 
-It keeps only European datacenters, identified by OVHcloud region codes beginning with `eu-`, then reports the `linuxStatus` field for each location.
+It keeps only European datacenters, identified by OVHcloud region codes beginning with `eu-`, then reports either `linuxStatus` or `windowsStatus` depending on the selected OS.
 
 ## Notes
 
 - The bot does not order a VPS. It only reports availability.
-- During continuous monitoring, it sends a notification when availability changes from unavailable to available.
+- During continuous monitoring, it sends a notification when availability changes from unavailable to available for the selected OS and VPS type.
 - OVHcloud stock can disappear quickly, so a low interval such as `30` or `60` seconds is practical.
